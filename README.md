@@ -1,46 +1,37 @@
-<h1 align='center' >github alerts slack bot :robot: </h1>
+<h1 align='center' >github alerts issues slack bot :robot: </h1>
 
 
-## What is it? :mag: 
-This is a simple bot that serves to send some notifications about GitHub events to Slack channels.
-
-These are the features currently developed:
-- notification to inform Pull Requests with conflicts
-
-> Others features may be developed in the future.
+## O que é isso? :mag: 
+Um bot simples que envia notificações para o slack sempre que um PR é fechado e existe uma issue relacionada a ele
 
 <br>
 
-## How it works :factory_worker: 
-- GitHub webhook send a request to bot to selected event (Pull Request has been opened, per example)
-- It handle the request
-  - it check if the request comes from the correct GitHub webhook to avoid fraud
-  - it don't send repeated notification with same data on the same day
-- Whether yes, the Slack webhook is called to create a message in on channel with the information (a Pull Request is open) 
+## Como funciona :factory_worker: 
+- O GitHub envia uma requisição via webhook sempre que ocorre um evento com Pull Request
+- O bot verifica se existe uma issue relacionada ao PR mergeado
+  - uma issue é considerada relacionada sempre que eu seu corpo houver menção ao PR com o formato #ID_DO_PR (exemplo: #1234) e também contiver o label "ajuste pr"
+- Se tiver issue relacionada, envia uma mensagem para o slack cadastrado
 
 <br>
 
-## Configuration :gear:
-### Create a access token of GitHub
-Navigate to **Settings** > **Developer Settings** > **Personal access tokens** > **Generate new token**
+## Configuração :gear:
+### Criar o token de acesso do github
+Navegue para **Settings** > **Developer Settings** > **Personal access tokens** > **Generate new token**
 
-The permission `repo` is only need to access necessary datas of yours repositories:
+A permissão `repo` é necessária apenas para acessar os dados dos seus repositórios (nesse caso das issues):
 ![image](https://user-images.githubusercontent.com/40877357/149664862-d9247ea9-17d3-4f70-8dbc-7b936cd05be7.png)
 
-Save the access token after creating it.
+Salve o token de acesso depois de criar ele.
 
-### Create a workflow in Slack
-The workflow is the point used to send the notifications and [here there are a tutorial to create one](https://slack.com/help/articles/360035692513-Guide-to-Workflow-Builder).
+### Crie um workflow no slack
+O workflow é o ponto utilizado para enviar mensagens para o [Slack e aqui tem um tutorial para criar um](https://slack.com/help/articles/360035692513-Guide-to-Workflow-Builder).
 
-The only var required in the text is `prs_list`.
+As variáveis necessárias são essas:
+- `issue_id`: ID da issue
+- `user_login`: Username do usuário responsável pelo pull request
+- `pr_id`: ID do pull request
 
-You can customize the message of your workflow as you wish:
-
-<div align='center'>
-  <img src='https://user-images.githubusercontent.com/40877357/149665467-b376fc4b-c090-49ef-ba81-d0f3546d6fa7.png' alt='example of workflow'>
-</div>
-
-After create, save the workflow webhook.
+Após criar, salve a url do webhook do workflow.
 
 ### Deploy the bot
 First, create your fork of this project to can perform the deploy.
@@ -56,27 +47,6 @@ Greate! If everything is ok, you can see this message:
 <div align='center'>
   <img src='https://user-images.githubusercontent.com/40877357/149665992-a61d9617-3c3e-44f4-bbdf-68e3efb011b1.png' alt='success deploy'>
 </div>
-
-### Install Redis
-[Redis](https://redis.io/) is used to check if one message is send in the past day with the same pull requests.
-
-In the dashboard of your project in Heroku, go to **Resources** > **Find more add-ons**
-
-Select **Redis Enterprise Cloud**. It will probably ask you to set up the credit card on your account, but don't worry, the free plan is enough to our bot.
-After set up your credit card, select the free plan and the project of bot to install the Redis.
-
-It is listed in your add-ons if everything is ok:
-
-<div align='center'>
-  <img src='https://user-images.githubusercontent.com/40877357/149666456-0bcc557f-825f-4c4f-bf08-2c1680e89fed.png' alt='redis add-on'>
-</div>
-
-Access the add-on and complete the Redis url with the datas: `http://rediscloud:password@hostname:port`
-
-Like this:
-`http://rediscloud:cofe6kWpNnsdlfkçlç3441kj2l@redis-0000.c11.en-east-1-3.ec2.cloud.redislabs.com:1234`
-
-This will be used to connect our bot with the Redis.
 
 ### Create GitHub webhook
 **Your repository to track** > **Settings** > **Webhooks** > **add webhook**
