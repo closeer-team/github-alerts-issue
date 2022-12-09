@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from . import main
+from .tasks import *
 
 def create_app():
     # create and configure the app

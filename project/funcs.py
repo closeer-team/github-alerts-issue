@@ -9,6 +9,14 @@ g = Github(ACCESS_TOKEN)
 repo = g.get_repo(PROJECT_TO_TRACK)
 
 
+def pr_is_merged(pr_id: int):
+    """
+    Verifica se o Pull Request já foi mergeado
+    """
+    pull_request = repo.get_pull(pr_id)
+    return pull_request.merged
+
+
 def get_related_issue(pr_id: int):
     """
     Retorna a issue relacionada ao PR
@@ -29,7 +37,7 @@ def get_related_issue(pr_id: int):
     return related_issue
 
 
-def notify_related_issue_in_slack(issue_id: int, user_login: str, pr_id: int):
+def notify_related_issue_in_slack(texts: list):
     """
     Envia a notificação de issue relacionada ao PR para o slack
 
@@ -38,9 +46,9 @@ def notify_related_issue_in_slack(issue_id: int, user_login: str, pr_id: int):
     - pr_id [int]: ID do Pull Request
     """
     data = {
-        'issue_id': str(issue_id),
-        'user_login': str(user_login),
-        'pr_id': str(pr_id),
+        'text': '\n\n'.join(texts)
     }
 
     requests.post(SLACK_WEBHOOK_LINK, data=json.dumps(data))
+
+# alterar para ser uma task que verifica periodicamente todos os PRs
