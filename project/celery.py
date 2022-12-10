@@ -1,6 +1,7 @@
 from celery import Celery
+from .constants import REDIS_URL
 
-celery_app = Celery('tasks', broker='redis://localhost')
+celery_app = Celery('tasks', broker=REDIS_URL)
 celery_app.conf.update(
     enable_utc=True,
     timezone='America/Fortaleza',

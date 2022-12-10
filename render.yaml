@@ -1,0 +1,22 @@
+services:
+  - type: worker
+    name: queue
+    region: ohio
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A project worker -l info -B"
+    autoDeploy: false
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          name: redis-celery
+          type: redis
+          property: connectionString
+  - type: web
+    name: app
+    region: ohio
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:wsgi"
+    autoDeploy: false
+    
