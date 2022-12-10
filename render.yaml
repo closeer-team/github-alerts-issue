@@ -12,11 +12,4 @@ services:
           name: redis-celery
           type: redis
           property: connectionString
-  - type: web
-    name: app
-    region: ohio
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:wsgi"
-    autoDeploy: false
     
